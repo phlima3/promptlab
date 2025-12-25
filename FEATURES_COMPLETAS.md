@@ -13,6 +13,7 @@ Todas as features solicitadas foram implementadas com sucesso!
 Sistema completo de registro e login com segurança enterprise-grade.
 
 **Backend (API):**
+
 - ✅ User model no Prisma com campos:
   - `id`, `email` (unique), `passwordHash`, `name`, `createdAt`, `updatedAt`
 - ✅ Relacionamentos:
@@ -29,6 +30,7 @@ Sistema completo de registro e login com segurança enterprise-grade.
   - `GET /auth/me` - Informações do usuário autenticado
 
 **Segurança:**
+
 - Token Bearer no header `Authorization: Bearer <token>`
 - JWT_SECRET configurável via `.env`
 - Expiração do token: 7 dias (configurável)
@@ -36,11 +38,13 @@ Sistema completo de registro e login com segurança enterprise-grade.
 - Senha mínima: 8 caracteres
 
 **Integração com Templates e Jobs:**
+
 - Templates podem ser privados (associados a um user) ou públicos (userId = null)
 - Jobs são automaticamente associados ao usuário se autenticado
 - Listagens filtram por usuário quando autenticado
 
 **Exemplo de uso:**
+
 ```bash
 # Registrar
 curl -X POST http://localhost:4000/auth/register \
@@ -67,10 +71,12 @@ curl http://localhost:4000/auth/me \
 Interface interativa completa para explorar e testar a API.
 
 **Tecnologias:**
+
 - `swagger-jsdoc` - Gera spec OpenAPI 3.0 a partir de JSDoc
 - `swagger-ui-express` - Interface visual
 
 **Configuração:**
+
 - Arquivo: `apps/api/src/swagger.ts`
 - Endpoint: `http://localhost:4000/api-docs`
 - OpenAPI 3.0.0 spec completo
@@ -78,6 +84,7 @@ Interface interativa completa para explorar e testar a API.
 **Documentação inclui:**
 
 1. **Schemas:**
+
    - Error (com códigos padronizados)
    - User
    - AuthResponse
@@ -85,23 +92,27 @@ Interface interativa completa para explorar e testar a API.
    - Job
 
 2. **Endpoints documentados:**
-   
+
    **Auth:**
+
    - POST /auth/register - Registrar usuário
    - POST /auth/login - Login
    - GET /auth/me - Info do usuário (requer auth)
-   
+
    **Templates:**
+
    - POST /templates - Criar template (auth opcional)
    - GET /templates - Listar templates
    - GET /templates/:id - Obter template específico
-   
+
    **Jobs:**
+
    - POST /generate - Gerar conteúdo (cria job)
    - GET /jobs - Listar jobs
    - GET /jobs/:id - Status e resultado do job
-   
+
    **Health:**
+
    - GET /health - Health check
 
 3. **Features do Swagger:**
@@ -114,12 +125,14 @@ Interface interativa completa para explorar e testar a API.
    - ✅ Custom branding (sem topbar padrão)
 
 **Como usar:**
+
 1. Acesse `http://localhost:4000/api-docs`
 2. Explore os endpoints
 3. Clique em "Authorize" e adicione seu token JWT
 4. Use "Try it out" para testar qualquer endpoint
 
 **Benefícios:**
+
 - 📖 Documentação sempre atualizada com o código
 - 🧪 Testes manuais sem precisar de Postman
 - 👥 Onboarding rápido para novos desenvolvedores
@@ -132,13 +145,16 @@ Interface interativa completa para explorar e testar a API.
 Suporte completo para múltiplos idiomas na interface web.
 
 **Idiomas suportados:**
+
 - 🇺🇸 Inglês (en-US) - padrão
 - 🇧🇷 Português (pt-BR)
 
 **Tecnologia:**
+
 - `next-intl` - Framework oficial para Next.js
 
 **Estrutura:**
+
 ```
 apps/web/
 ├── messages/
@@ -153,31 +169,37 @@ apps/web/
 **Traduções incluem:**
 
 1. **Navegação:**
+
    - Home, Templates, Generate, Jobs, Docs
 
 2. **Homepage:**
+
    - Hero section (título, subtítulo, CTAs)
    - Features cards (4 cards)
    - Stats (templates, jobs, success rate)
 
 3. **Templates:**
+
    - CRUD completo (criar, listar, editar, deletar)
    - Formulário (name, systemPrompt, userPrompt, variables)
    - Estados vazios
 
 4. **Generate:**
+
    - Seleção de template e provider
    - Input form
    - Preview de prompts
    - Feedback (cache hit, success)
 
 5. **Jobs:**
+
    - Listagem e detalhes
    - Status badges (queued, running, completed, failed)
    - Métricas (tokens, cost, timestamps)
    - Estados vazios
 
 6. **Autenticação:**
+
    - Login/Register forms
    - Mensagens de sucesso/erro
 
@@ -188,6 +210,7 @@ apps/web/
 **Componentes:**
 
 **LanguageSwitcher:**
+
 ```tsx
 <LanguageSwitcher />
 // Mostra botões EN | PT
@@ -196,27 +219,31 @@ apps/web/
 ```
 
 **Uso em componentes:**
+
 ```tsx
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
 
 function MyComponent() {
-  const t = useTranslations('templates');
-  return <h1>{t('title')}</h1>; // "Templates" ou "Modelos"
+  const t = useTranslations("templates");
+  return <h1>{t("title")}</h1>; // "Templates" ou "Modelos"
 }
 ```
 
 **Navegação:**
+
 - Middleware detecta idioma preferido do browser
 - Salva escolha em cookie
 - URLs podem incluir locale: `/pt-BR/templates`, `/en-US/generate`
 - Troca instantânea sem reload da página
 
 **Como usar:**
+
 1. Clique nos botões EN/PT no header
 2. Idioma muda instantaneamente
 3. Preferência é salva automaticamente
 
 **Benefícios:**
+
 - 🌍 Alcance global
 - 🇧🇷 Suporte ao mercado brasileiro
 - 🎯 Melhor UX para falantes nativos
@@ -229,6 +256,7 @@ function MyComponent() {
 ### Backend (API)
 
 **Novos arquivos:**
+
 ```
 apps/api/src/
 ├── middleware/
@@ -239,6 +267,7 @@ apps/api/src/
 ```
 
 **Modificados:**
+
 ```
 apps/api/src/
 ├── index.ts                 # Adicionado /auth e /api-docs
@@ -248,6 +277,7 @@ apps/api/src/
 ```
 
 **Pacotes instalados:**
+
 ```json
 {
   "dependencies": {
@@ -268,6 +298,7 @@ apps/api/src/
 ### Database
 
 **Migration:**
+
 ```
 packages/db/prisma/migrations/
 └── 20251225142731_add_user_auth/
@@ -275,6 +306,7 @@ packages/db/prisma/migrations/
 ```
 
 **Schema changes:**
+
 - Adicionado model `User`
 - Adicionado campo `userId` em `Template`
 - Adicionado campo `userId` em `Job`
@@ -283,6 +315,7 @@ packages/db/prisma/migrations/
 ### Frontend (Web)
 
 **Novos arquivos:**
+
 ```
 apps/web/
 ├── messages/
@@ -295,6 +328,7 @@ apps/web/
 ```
 
 **Modificados:**
+
 ```
 apps/web/
 ├── next.config.ts           # withNextIntl plugin
@@ -305,6 +339,7 @@ apps/web/
 ```
 
 **Pacotes instalados:**
+
 ```json
 {
   "dependencies": {
@@ -316,6 +351,7 @@ apps/web/
 ### Environment
 
 **Novas variáveis (.env):**
+
 ```bash
 # JWT Configuration
 JWT_SECRET="your-super-secret-jwt-key-change-in-production-min-32-chars"
@@ -396,11 +432,11 @@ npm run dev
 
 ## 📊 Métricas Finais
 
-| Feature                    | Status | Complexidade | Tempo  |
-| -------------------------- | ------ | ------------ | ------ |
-| Autenticação JWT           | ✅     | Alta         | ~2h    |
-| Swagger Documentation      | ✅     | Média        | ~1.5h  |
-| Internacionalização (i18n) | ✅     | Média        | ~1.5h  |
+| Feature                    | Status | Complexidade | Tempo   |
+| -------------------------- | ------ | ------------ | ------- |
+| Autenticação JWT           | ✅     | Alta         | ~2h     |
+| Swagger Documentation      | ✅     | Média        | ~1.5h   |
+| Internacionalização (i18n) | ✅     | Média        | ~1.5h   |
 | **TOTAL**                  | ✅     | -            | **~5h** |
 
 ### Cobertura
@@ -418,6 +454,7 @@ npm run dev
 ### 1. Autenticação
 
 **"Como você implementou autenticação?"**
+
 - JWT stateless (sem session storage)
 - bcryptjs com salt rounds 10 (industry standard)
 - Middleware reutilizável (authenticateToken vs optionalAuth)
@@ -425,11 +462,13 @@ npm run dev
 - Soft integration: templates/jobs podem ser anônimos ou privados
 
 **Trade-offs:**
+
 - JWT stateless = não pode invalidar tokens (solução: TTL curto + refresh tokens)
 - Fail-closed no authenticateToken (segurança)
 - Fail-open no optionalAuth (disponibilidade)
 
 **Melhorias futuras:**
+
 - Refresh tokens
 - Password reset flow
 - Email verification
@@ -438,6 +477,7 @@ npm run dev
 ### 2. Documentação
 
 **"Por que Swagger e não apenas README?"**
+
 - Interface interativa (try it out)
 - Sempre sincronizado com código (JSDoc comments)
 - Padrão OpenAPI (interop com ferramentas)
@@ -445,12 +485,14 @@ npm run dev
 - Onboarding de desenvolvedores
 
 **Decisões:**
+
 - OpenAPI 3.0 (mais moderno que 2.0)
 - JSDoc nos arquivos de rotas (co-located)
 - Security schemes definidos (bearerAuth)
 - Exemplos reais de request/response
 
 **Alternativas consideradas:**
+
 - Postman collections (menos automático)
 - API Blueprint (menos usado)
 - GraphQL (mudaria toda arquitetura)
@@ -458,6 +500,7 @@ npm run dev
 ### 3. Internacionalização
 
 **"Como você escolheu a biblioteca i18n?"**
+
 - next-intl: oficial e bem mantido
 - SSR-first (Next.js App Router)
 - TypeScript-friendly
@@ -465,12 +508,14 @@ npm run dev
 - Zero runtime overhead (arquivos JSON)
 
 **Arquitetura:**
+
 - Messages em JSON (fácil manutenção)
 - Namespaces por feature (common, nav, home, etc)
 - useTranslations hook (React-idiomatic)
 - LanguageSwitcher reutilizável
 
 **Escalabilidade:**
+
 - Adicionar novo idioma: criar `messages/fr-FR.json`
 - Adicionar nova string: adicionar em todos os JSONs
 - CI pode validar completude (todos locales têm mesmas keys)
@@ -482,21 +527,25 @@ npm run dev
 Se quiser levar o projeto ainda mais longe:
 
 ### 1. Testes Automatizados
+
 - Jest + React Testing Library (frontend)
 - Supertest (API endpoints)
 - Prisma mocking (database)
 
 ### 2. CI/CD Pipeline
+
 - GitHub Actions
 - Deploy automático (Vercel + Railway)
 - Ambiente de staging
 
 ### 3. Monitoramento
+
 - Sentry (error tracking)
 - Posthog (analytics)
 - Prometheus + Grafana (metrics)
 
 ### 4. Features Avançadas
+
 - WebSockets (real-time job updates)
 - Bulk operations (delete múltiplos jobs)
 - Template marketplace (compartilhar templates)
@@ -537,6 +586,7 @@ Todas as três features foram implementadas com sucesso:
 3. ✅ **i18n** - Suporte a pt-BR e en-US
 
 O projeto **PromptLab** agora está **production-ready** com:
+
 - Segurança enterprise-grade
 - Documentação profissional
 - Suporte internacional

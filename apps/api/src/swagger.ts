@@ -6,7 +6,8 @@ const options: swaggerJsdoc.Options = {
     info: {
       title: "PromptLab API",
       version: "1.0.0",
-      description: "AI Writing Workspace API - Create prompt templates and generate content using LLMs",
+      description:
+        "AI Writing Workspace API - Create prompt templates and generate content using LLMs",
       contact: {
         name: "PromptLab Team",
         url: "https://github.com/yourorg/promptlab",

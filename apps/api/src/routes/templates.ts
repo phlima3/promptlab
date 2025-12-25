@@ -55,25 +55,28 @@ router.use(optionalAuth);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post("/", async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-    const data = CreateTemplateSchema.parse(req.body);
+router.post(
+  "/",
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = CreateTemplateSchema.parse(req.body);
 
-    const template = await prisma.template.create({
-      data: {
-        name: data.name,
-        systemPrompt: data.systemPrompt,
-        userPrompt: data.userPrompt,
-        variablesSchema: data.variablesSchema,
-        userId: req.user?.userId || null,
-      },
-    });
+      const template = await prisma.template.create({
+        data: {
+          name: data.name,
+          systemPrompt: data.systemPrompt,
+          userPrompt: data.userPrompt,
+          variablesSchema: data.variablesSchema,
+          userId: req.user?.userId || null,
+        },
+      });
 
-    res.status(201).json(template);
-  } catch (error) {
-    next(error);
+      res.status(201).json(template);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -97,7 +100,7 @@ router.post("/", async (req: AuthRequest, res: Response, next: NextFunction) => 
 router.get("/", async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     // If authenticated, show user's templates. Otherwise show all public templates.
-    const where = req.user?.userId 
+    const where = req.user?.userId
       ? { userId: req.user.userId }
       : { userId: null };
 
@@ -140,20 +143,23 @@ router.get("/", async (req: AuthRequest, res: Response, next: NextFunction) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get("/:id", async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-    const template = await prisma.template.findUnique({
-      where: { id: req.params.id },
-    });
+router.get(
+  "/:id",
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const template = await prisma.template.findUnique({
+        where: { id: req.params.id },
+      });
 
-    if (!template) {
-      throw new AppError("not_found", "Template not found", undefined, 404);
+      if (!template) {
+        throw new AppError("not_found", "Template not found", undefined, 404);
+      }
+
+      res.json(template);
+    } catch (error) {
+      next(error);
     }
-
-    res.json(template);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 export default router;

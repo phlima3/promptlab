@@ -6,7 +6,11 @@ import {
   ErrorCode,
 } from "@promptlab/shared";
 import { prisma } from "@promptlab/db/src/client";
-import { generateToken, AuthRequest, authenticateToken } from "../middleware/auth";
+import {
+  generateToken,
+  AuthRequest,
+  authenticateToken,
+} from "../middleware/auth";
 
 const router = Router();
 
@@ -266,39 +270,43 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get("/me", authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user!.userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-
-    if (!user) {
-      res.status(404).json({
-        error: {
-          code: "not_found" as ErrorCode,
-          message: "User not found",
+router.get(
+  "/me",
+  authenticateToken,
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: req.user!.userId },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true,
         },
       });
-      return;
-    }
 
-    res.json(user);
-  } catch (error) {
-    console.error("[AUTH] Get user error:", error);
-    res.status(500).json({
-      error: {
-        code: "internal_error" as ErrorCode,
-        message: "Failed to get user info",
-      },
-    });
+      if (!user) {
+        res.status(404).json({
+          error: {
+            code: "not_found" as ErrorCode,
+            message: "User not found",
+          },
+        });
+        return;
+      }
+
+      res.json(user);
+    } catch (error) {
+      console.error("[AUTH] Get user error:", error);
+      res.status(500).json({
+        error: {
+          code: "internal_error" as ErrorCode,
+          message: "Failed to get user info",
+        },
+      });
+    }
   }
-});
+);
 
 export default router;

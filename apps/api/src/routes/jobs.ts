@@ -68,88 +68,91 @@ router.use(optionalAuth);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post("/", async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-    const data = GenerateRequestSchema.parse(req.body);
+router.post(
+  "/",
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = GenerateRequestSchema.parse(req.body);
 
-    // Check if template exists
-    const template = await prisma.template.findUnique({
-      where: { id: data.templateId },
-    });
+      // Check if template exists
+      const template = await prisma.template.findUnique({
+        where: { id: data.templateId },
+      });
 
-    if (!template) {
-      throw new AppError("not_found", "Template not found", undefined, 404);
-    }
+      if (!template) {
+        throw new AppError("not_found", "Template not found", undefined, 404);
+      }
 
-    // Create input hash for idempotency
-    const inputHash = crypto
-      .createHash("sha256")
-      .update(
-        JSON.stringify({
+      // Create input hash for idempotency
+      const inputHash = crypto
+        .createHash("sha256")
+        .update(
+          JSON.stringify({
+            templateId: data.templateId,
+            provider: data.provider,
+            input: data.input,
+            version: template.version,
+          })
+        )
+        .digest("hex");
+
+      // Check Redis cache first (fast path)
+      const cachedJobId = await getCached<string>(`job:hash:${inputHash}`, {
+        keyPrefix: "gen",
+      });
+
+      if (cachedJobId) {
+        console.log(`[API] Cache hit for inputHash: ${inputHash}`);
+        return res.json({ jobId: cachedJobId, cached: true });
+      }
+
+      // Check if we already have a completed job with this input hash
+      const existingJob = await prisma.job.findFirst({
+        where: {
+          inputHash,
+          status: "completed",
+        },
+      });
+
+      if (existingJob) {
+        // Store in cache for next time (1 hour TTL)
+        await setCached(`job:hash:${inputHash}`, existingJob.id, {
+          keyPrefix: "gen",
+          ttl: 3600, // 1 hour
+        });
+        return res.json({ jobId: existingJob.id });
+      }
+
+      // Check if there's already a queued or running job with this hash
+      const pendingJob = await prisma.job.findFirst({
+        where: {
+          inputHash,
+          status: { in: ["queued", "running"] },
+        },
+      });
+
+      if (pendingJob) {
+        return res.json({ jobId: pendingJob.id });
+      }
+
+      // Create new job
+      const job = await prisma.job.create({
+        data: {
           templateId: data.templateId,
           provider: data.provider,
           input: data.input,
-          version: template.version,
-        })
-      )
-      .digest("hex");
-
-    // Check Redis cache first (fast path)
-    const cachedJobId = await getCached<string>(`job:hash:${inputHash}`, {
-      keyPrefix: "gen",
-    });
-
-    if (cachedJobId) {
-      console.log(`[API] Cache hit for inputHash: ${inputHash}`);
-      return res.json({ jobId: cachedJobId, cached: true });
-    }
-
-    // Check if we already have a completed job with this input hash
-    const existingJob = await prisma.job.findFirst({
-      where: {
-        inputHash,
-        status: "completed",
-      },
-    });
-
-    if (existingJob) {
-      // Store in cache for next time (1 hour TTL)
-      await setCached(`job:hash:${inputHash}`, existingJob.id, {
-        keyPrefix: "gen",
-        ttl: 3600, // 1 hour
+          inputHash,
+          status: "queued",
+          userId: req.user?.userId || null,
+        },
       });
-      return res.json({ jobId: existingJob.id });
+
+      res.json({ jobId: job.id });
+    } catch (error) {
+      next(error);
     }
-
-    // Check if there's already a queued or running job with this hash
-    const pendingJob = await prisma.job.findFirst({
-      where: {
-        inputHash,
-        status: { in: ["queued", "running"] },
-      },
-    });
-
-    if (pendingJob) {
-      return res.json({ jobId: pendingJob.id });
-    }
-
-    // Create new job
-    const job = await prisma.job.create({
-      data: {
-        templateId: data.templateId,
-        provider: data.provider,
-        input: data.input,
-        inputHash,
-        status: "queued",
-        userId: req.user?.userId || null,
-      },
-    });
-
-    res.json({ jobId: job.id });
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 /**
  * @swagger
@@ -179,29 +182,32 @@ router.post("/", async (req: AuthRequest, res: Response, next: NextFunction) => 
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get("/:id", async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-    const job = await prisma.job.findUnique({
-      where: { id: req.params.id },
-      include: {
-        template: {
-          select: {
-            id: true,
-            name: true,
+router.get(
+  "/:id",
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const job = await prisma.job.findUnique({
+        where: { id: req.params.id },
+        include: {
+          template: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    if (!job) {
-      throw new AppError("not_found", "Job not found", undefined, 404);
+      if (!job) {
+        throw new AppError("not_found", "Job not found", undefined, 404);
+      }
+
+      res.json(job);
+    } catch (error) {
+      next(error);
     }
-
-    res.json(job);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 /**
  * @swagger
@@ -225,7 +231,7 @@ router.get("/:id", async (req: AuthRequest, res: Response, next: NextFunction) =
 router.get("/", async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     // If authenticated, show user's jobs. Otherwise show all public jobs.
-    const where = req.user?.userId 
+    const where = req.user?.userId
       ? { userId: req.user.userId }
       : { userId: null };
 

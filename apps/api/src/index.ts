@@ -58,10 +58,13 @@ app.get("/health", (req, res) => {
 
 // Swagger documentation
 app.use("/api-docs", swaggerUi.serve as any);
-app.get("/api-docs", swaggerUi.setup(swaggerSpec, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: "PromptLab API Docs",
-}) as any);
+app.get(
+  "/api-docs",
+  swaggerUi.setup(swaggerSpec, {
+    customCss: ".swagger-ui .topbar { display: none }",
+    customSiteTitle: "PromptLab API Docs",
+  }) as any
+);
 
 // Routes
 app.use("/auth", authRouter);
