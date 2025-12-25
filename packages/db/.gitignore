@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Prisma
+*.db
+*.db-journal
+
+# Generated
+src/generated/
