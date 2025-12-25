@@ -7,11 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Template {
+  id              String   @id @default(cuid())
+  name            String
+  systemPrompt    String   @db.Text
+  userPrompt      String   @db.Text
+  variablesSchema Json     @default("{}")
+  version         Int      @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  jobs Job[]
+
+  @@index([createdAt])
+}
+
 model Job {
-  id        String   @id @default(cuid())
-  status    String   @default("queued")
-  input     String
-  output    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String    @id @default(cuid())
+  status     String    @default("queued") // queued, running, completed, failed
+  templateId String
+  provider   String // openai, anthropic
+  input      String    @db.Text
+  inputHash  String // for idempotency
+  output     String?   @db.Text
+  error      String?   @db.Text
+  attempts   Int       @default(0)
+  startedAt  DateTime?
+  finishedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([inputHash])
+  @@index([templateId])
 }

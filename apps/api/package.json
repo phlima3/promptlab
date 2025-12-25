@@ -1,8 +1,9 @@
 {
   "name": "@promptlab/api",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "dotenv -e ../../.env -- tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"add eslint later\""

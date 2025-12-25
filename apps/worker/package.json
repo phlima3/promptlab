@@ -1,8 +1,9 @@
 {
   "name": "@promptlab/worker",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "dotenv -e ../../.env -- tsx watch src/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "build": "tsc -p tsconfig.json"
   },

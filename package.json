@@ -10,9 +10,14 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "db:migrate": "dotenv -e .env -- npx prisma migrate dev --schema=./packages/db/prisma/schema.prisma",
+    "db:generate": "cd packages/db && npx prisma generate",
+    "db:seed": "dotenv -e .env -- tsx packages/db/src/seed.ts",
+    "test:flow": "dotenv -e .env -- tsx scripts/test-flow.ts"
   },
   "devDependencies": {
+    "dotenv-cli": "^11.0.0",
     "tsx": "^4.21.0",
     "turbo": "^2.0.0",
     "typescript": "^5.5.0"
