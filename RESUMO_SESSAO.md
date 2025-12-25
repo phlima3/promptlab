@@ -30,7 +30,7 @@
 - **Rate Limiting**:
   - Sliding window algorithm (accurate, O(log N))
   - 100 requests/min per IP
-  - X-RateLimit-* headers
+  - X-RateLimit-\* headers
   - Fail-closed em caso de Redis down (segurança)
 - **Cache Layer**:
   - Cache por inputHash (1h TTL)

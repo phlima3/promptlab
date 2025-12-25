@@ -1,10 +1,24 @@
 import express from "express";
+import cors from "cors";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { rateLimitMiddleware } from "./middleware/rateLimit";
 import templatesRouter from "./routes/templates";
 import jobsRouter from "./routes/jobs";
 
 const app = express();
+
+// CORS - Allow requests from localhost:3000 (Next.js dev server)
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "http://localhost:3001",
+    ],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Rate limiting: 100 requests per minute per IP

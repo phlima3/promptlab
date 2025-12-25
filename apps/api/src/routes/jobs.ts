@@ -115,4 +115,18 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+// List all jobs (newest first)
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const jobs = await prisma.job.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 100, // Limit to last 100 jobs
+    });
+
+    res.json(jobs);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
