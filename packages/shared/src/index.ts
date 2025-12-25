@@ -14,8 +14,45 @@ export const ErrorCode = z.enum([
   "rate_limited",
   "internal_error",
   "provider_error",
+  "unauthorized",
+  "forbidden",
+  "conflict",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;
+
+// ===== Auth Schemas =====
+
+export const RegisterRequestSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8).max(100),
+  name: z.string().min(1).max(255).optional(),
+});
+export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
+
+export const LoginRequestSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+export type LoginRequest = z.infer<typeof LoginRequestSchema>;
+
+export const AuthResponseSchema = z.object({
+  token: z.string(),
+  user: z.object({
+    id: z.string(),
+    email: z.string(),
+    name: z.string().nullable(),
+  }),
+});
+export type AuthResponse = z.infer<typeof AuthResponseSchema>;
+
+export const UserSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  name: z.string().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+export type User = z.infer<typeof UserSchema>;
 
 // ===== Template Schemas =====
 

@@ -7,6 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  templates Template[]
+  jobs      Job[]
+
+  @@index([email])
+}
+
 model Template {
   id              String   @id @default(cuid())
   name            String
@@ -14,18 +28,22 @@ model Template {
   userPrompt      String   @db.Text
   variablesSchema Json     @default("{}")
   version         Int      @default(1)
+  userId          String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   jobs Job[]
 
   @@index([createdAt])
+  @@index([userId])
 }
 
 model Job {
   id         String  @id @default(cuid())
   status     String  @default("queued") // queued, running, completed, failed
   templateId String
+  userId     String?
   provider   String // openai, anthropic
   model      String? // e.g., claude-3-5-sonnet-20241022
   input      String  @db.Text
@@ -46,8 +64,10 @@ model Job {
   updatedAt  DateTime  @updatedAt
 
   template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([status, createdAt])
   @@index([inputHash])
   @@index([templateId])
+  @@index([userId])
 }
