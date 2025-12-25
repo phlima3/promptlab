@@ -124,7 +124,7 @@ Worker processou job com sucesso:
 - ✅ Redis client wrapper com reconnection e error handling
 - ✅ Sliding window rate limiter (accurate, O(log N))
 - ✅ Rate limit middleware para Express (100 req/min)
-- ✅ X-RateLimit-* headers em responses
+- ✅ X-RateLimit-\* headers em responses
 - ✅ Cache layer para resultados (get/set/delete/exists)
 - ✅ getOrSet pattern (try cache, compute, cache result)
 - ✅ API usa cache antes de consultar DB (fast path)

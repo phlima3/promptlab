@@ -13,16 +13,16 @@ export interface CacheOptions {
 
 /**
  * Result cache for expensive operations (LLM calls)
- * 
+ *
  * Trade-offs:
  * - Storage cost vs API cost (Redis cheap, LLM expensive → obvious win)
  * - Stale data risk (mitigated by TTL)
  * - Memory usage (mitigated by eviction policy)
- * 
+ *
  * Failure modes:
  * - Redis unavailable: cache miss (degrade gracefully)
  * - Serialization error: log and skip cache
- * 
+ *
  * What I'd improve:
  * - Add cache warming for common queries
  * - Support cache tags for bulk invalidation

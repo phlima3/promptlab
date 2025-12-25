@@ -24,18 +24,18 @@ export interface RateLimitResult {
 
 /**
  * Sliding window rate limiter using Redis
- * 
+ *
  * Uses sorted sets with timestamps as scores for accurate sliding window.
- * 
+ *
  * Trade-offs:
  * - More accurate than fixed window (no edge case spikes)
  * - More storage than token bucket (keeps all request timestamps)
  * - O(log N) complexity for zadd/zcount operations
- * 
+ *
  * Failure modes:
  * - Redis unavailable: throws error (fail-closed for security)
  * - Network timeout: throws after retries
- * 
+ *
  * What I'd improve:
  * - Add fallback to in-memory limiter if Redis is down
  * - Add metrics for rate limit hits
