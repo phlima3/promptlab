@@ -1,0 +1,20 @@
+{
+  "name": "@promptlab/api",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo \"add eslint later\""
+  },
+  "dependencies": {
+    "@promptlab/shared": "*",
+    "@promptlab/db": "*",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.0",
+    "@types/express": "^4.17.21"
+  }
+}
