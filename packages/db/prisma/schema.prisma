@@ -23,15 +23,23 @@ model Template {
 }
 
 model Job {
-  id         String    @id @default(cuid())
-  status     String    @default("queued") // queued, running, completed, failed
+  id         String  @id @default(cuid())
+  status     String  @default("queued") // queued, running, completed, failed
   templateId String
   provider   String // openai, anthropic
-  input      String    @db.Text
+  model      String? // e.g., claude-3-5-sonnet-20241022
+  input      String  @db.Text
   inputHash  String // for idempotency
-  output     String?   @db.Text
-  error      String?   @db.Text
-  attempts   Int       @default(0)
+  output     String? @db.Text
+  error      String? @db.Text
+  attempts   Int     @default(0)
+
+  // Usage tracking
+  inputTokens      Int?
+  outputTokens     Int?
+  totalTokens      Int?
+  estimatedCostUSD Float?
+
   startedAt  DateTime?
   finishedAt DateTime?
   createdAt  DateTime  @default(now())

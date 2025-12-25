@@ -8,7 +8,8 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@promptlab/db": "*"
+    "@promptlab/db": "*",
+    "@promptlab/llm-provider": "*"
   },
   "devDependencies": {
     "tsx": "^4.16.2",
