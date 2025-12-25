@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@promptlab/db": "*",
-    "@promptlab/llm-provider": "*"
+    "@promptlab/llm-provider": "*",
+    "@promptlab/redis": "*"
   },
   "devDependencies": {
     "tsx": "^4.16.2",

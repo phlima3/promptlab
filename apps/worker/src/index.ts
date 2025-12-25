@@ -1,4 +1,5 @@
 import { prisma } from "@promptlab/db/src/client";
+import { setCached } from "@promptlab/redis";
 import {
   AnthropicProvider,
   ILLMProvider,
@@ -94,6 +95,15 @@ async function processJob(job: any) {
         finishedAt: new Date(),
       },
     });
+
+    // Cache the result by inputHash for fast future lookups
+    if (job.inputHash) {
+      await setCached(`job:hash:${job.inputHash}`, job.id, {
+        keyPrefix: "gen",
+        ttl: 3600, // 1 hour
+      });
+      console.log(`Cached result for inputHash: ${job.inputHash}`);
+    }
 
     console.log(
       `Job ${job.id} completed successfully. Tokens: ${

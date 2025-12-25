@@ -1,10 +1,20 @@
 import express from "express";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
+import { rateLimitMiddleware } from "./middleware/rateLimit";
 import templatesRouter from "./routes/templates";
 import jobsRouter from "./routes/jobs";
 
 const app = express();
 app.use(express.json());
+
+// Rate limiting: 100 requests per minute per IP
+app.use(
+  rateLimitMiddleware({
+    maxRequests: 100,
+    windowSeconds: 60,
+    keyPrefix: "api-ratelimit",
+  })
+);
 
 // Health check endpoint
 app.get("/health", (req, res) => {

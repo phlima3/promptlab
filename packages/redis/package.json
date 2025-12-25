@@ -1,0 +1,20 @@
+{
+  "name": "@promptlab/redis",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "ioredis": "^5.8.2"
+  },
+  "devDependencies": {
+    "@promptlab/tsconfig": "*",
+    "typescript": "^5.5.4"
+  }
+}
