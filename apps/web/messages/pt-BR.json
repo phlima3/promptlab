@@ -1,0 +1,171 @@
+{
+  "common": {
+    "appName": "PromptLab",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "create": "Criar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "submit": "Enviar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "close": "Fechar",
+    "copy": "Copiar",
+    "copied": "Copiado!",
+    "noData": "Nenhum dado disponível"
+  },
+  "nav": {
+    "home": "Início",
+    "templates": "Templates",
+    "generate": "Gerar",
+    "jobs": "Histórico",
+    "docs": "Documentação"
+  },
+  "home": {
+    "title": "PromptLab",
+    "subtitle": "Seu espaço de trabalho para escrita com IA",
+    "description": "Crie templates de prompts, gere conteúdo usando LLMs e acompanhe seus resultados.",
+    "getStarted": "Começar Agora",
+    "viewDocs": "Ver Documentação",
+    "features": {
+      "templates": {
+        "title": "Templates de Prompts",
+        "description": "Crie e gerencie templates reutilizáveis para suas tarefas de IA"
+      },
+      "generation": {
+        "title": "Geração de Conteúdo",
+        "description": "Execute gerações usando OpenAI ou Anthropic Claude"
+      },
+      "tracking": {
+        "title": "Rastreamento de Jobs",
+        "description": "Monitore o status e visualize resultados em tempo real"
+      },
+      "history": {
+        "title": "Histórico Completo",
+        "description": "Acesse todos os seus prompts e resultados anteriores"
+      }
+    },
+    "stats": {
+      "templates": "Templates",
+      "jobs": "Jobs Executados",
+      "success": "Taxa de Sucesso"
+    }
+  },
+  "templates": {
+    "title": "Templates",
+    "createNew": "Novo Template",
+    "noTemplates": "Nenhum template encontrado",
+    "createFirst": "Crie seu primeiro template para começar",
+    "form": {
+      "name": "Nome",
+      "namePlaceholder": "Ex: Escritor de Blog Posts",
+      "systemPrompt": "Prompt do Sistema",
+      "systemPromptPlaceholder": "Ex: Você é um escritor profissional...",
+      "userPrompt": "Prompt do Usuário",
+      "userPromptPlaceholder": "Ex: Escreva sobre: {{input}}",
+      "variables": "Variáveis (JSON)",
+      "variablesPlaceholder": "{\"input\": \"string\"}"
+    },
+    "actions": {
+      "use": "Usar Template",
+      "edit": "Editar",
+      "delete": "Excluir"
+    },
+    "version": "Versão",
+    "createdAt": "Criado em"
+  },
+  "generate": {
+    "title": "Gerar Conteúdo",
+    "selectTemplate": "Selecione um Template",
+    "noTemplates": "Nenhum template disponível",
+    "createTemplate": "Criar Template",
+    "selectProvider": "Provedor",
+    "providers": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic Claude"
+    },
+    "input": "Entrada",
+    "inputPlaceholder": "Digite sua entrada aqui...",
+    "preview": "Pré-visualização",
+    "systemPrompt": "Prompt do Sistema",
+    "userPrompt": "Prompt do Usuário",
+    "generate": "Gerar Conteúdo",
+    "generating": "Gerando...",
+    "cacheHit": "Resultado retornado do cache (instantâneo, sem custo adicional)",
+    "success": "Job criado com sucesso! Redirecionando..."
+  },
+  "jobs": {
+    "title": "Histórico de Jobs",
+    "noJobs": "Nenhum job encontrado",
+    "runFirst": "Execute sua primeira geração para ver resultados aqui",
+    "status": {
+      "queued": "Na Fila",
+      "running": "Executando",
+      "completed": "Concluído",
+      "failed": "Falhou"
+    },
+    "template": "Template",
+    "provider": "Provedor",
+    "input": "Entrada",
+    "output": "Saída",
+    "error": "Erro",
+    "cost": "Custo",
+    "tokens": "Tokens",
+    "attempts": "Tentativas",
+    "createdAt": "Criado em",
+    "startedAt": "Iniciado em",
+    "finishedAt": "Finalizado em",
+    "duration": "Duração",
+    "viewDetails": "Ver Detalhes",
+    "notFound": "Job não encontrado",
+    "notFoundDescription": "O job com ID {{jobId}} não existe",
+    "jobId": "Job",
+    "created": "Criado",
+    "finished": "Finalizado",
+    "usageMetrics": "Métricas de Uso",
+    "inputTokens": "Tokens de Entrada",
+    "outputTokens": "Tokens de Saída",
+    "details": {
+      "title": "Detalhes do Job",
+      "refreshing": "Atualizando...",
+      "metrics": "Métricas",
+      "inputTokens": "Tokens de Entrada",
+      "outputTokens": "Tokens de Saída",
+      "totalTokens": "Total de Tokens",
+      "estimatedCost": "Custo Estimado",
+      "timestamps": "Carimbos de Data/Hora"
+    }
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Registrar",
+    "logout": "Sair",
+    "email": "Email",
+    "password": "Senha",
+    "name": "Nome",
+    "confirmPassword": "Confirmar Senha",
+    "forgotPassword": "Esqueceu a senha?",
+    "noAccount": "Não tem uma conta?",
+    "hasAccount": "Já tem uma conta?",
+    "loginSuccess": "Login realizado com sucesso!",
+    "registerSuccess": "Registro realizado com sucesso!",
+    "loginError": "Erro ao fazer login",
+    "registerError": "Erro ao registrar"
+  },
+  "errors": {
+    "validation_error": "Erro de validação",
+    "not_found": "Não encontrado",
+    "rate_limited": "Limite de taxa excedido. Tente novamente mais tarde.",
+    "internal_error": "Erro interno do servidor",
+    "provider_error": "Erro do provedor de IA",
+    "unauthorized": "Não autorizado. Faça login para continuar.",
+    "forbidden": "Acesso negado",
+    "conflict": "Conflito. O recurso já existe.",
+    "generic": "Ocorreu um erro. Tente novamente."
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "common": {
+    "appName": "PromptLab",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "noData": "No data available"
+  },
+  "nav": {
+    "home": "Home",
+    "templates": "Templates",
+    "generate": "Generate",
+    "jobs": "History",
+    "docs": "Documentation"
+  },
+  "home": {
+    "title": "PromptLab",
+    "subtitle": "Your AI Writing Workspace",
+    "description": "Create prompt templates, generate content using LLMs, and track your results.",
+    "getStarted": "Get Started",
+    "viewDocs": "View Documentation",
+    "features": {
+      "templates": {
+        "title": "Prompt Templates",
+        "description": "Create and manage reusable templates for your AI tasks"
+      },
+      "generation": {
+        "title": "Content Generation",
+        "description": "Run generations using OpenAI or Anthropic Claude"
+      },
+      "tracking": {
+        "title": "Job Tracking",
+        "description": "Monitor status and view results in real-time"
+      },
+      "history": {
+        "title": "Complete History",
+        "description": "Access all your previous prompts and results"
+      }
+    },
+    "stats": {
+      "templates": "Templates",
+      "jobs": "Jobs Run",
+      "success": "Success Rate"
+    }
+  },
+  "templates": {
+    "title": "Templates",
+    "createNew": "New Template",
+    "noTemplates": "No templates found",
+    "createFirst": "Create your first template to get started",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "e.g. Blog Post Writer",
+      "systemPrompt": "System Prompt",
+      "systemPromptPlaceholder": "e.g. You are a professional writer...",
+      "userPrompt": "User Prompt",
+      "userPromptPlaceholder": "e.g. Write about: {{input}}",
+      "variables": "Variables (JSON)",
+      "variablesPlaceholder": "{\"input\": \"string\"}"
+    },
+    "actions": {
+      "use": "Use Template",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "version": "Version",
+    "createdAt": "Created at"
+  },
+  "generate": {
+    "title": "Generate Content",
+    "selectTemplate": "Select a Template",
+    "noTemplates": "No templates available",
+    "createTemplate": "Create Template",
+    "selectProvider": "Provider",
+    "providers": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic Claude"
+    },
+    "input": "Input",
+    "inputPlaceholder": "Enter your input here...",
+    "preview": "Preview",
+    "systemPrompt": "System Prompt",
+    "userPrompt": "User Prompt",
+    "generate": "Generate Content",
+    "generating": "Generating...",
+    "cacheHit": "Result returned from cache (instant, no additional cost)",
+    "success": "Job created successfully! Redirecting..."
+  },
+  "jobs": {
+    "title": "Job History",
+    "noJobs": "No jobs found",
+    "runFirst": "Run your first generation to see results here",
+    "status": {
+      "queued": "Queued",
+      "running": "Running",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "template": "Template",
+    "provider": "Provider",
+    "input": "Input",
+    "output": "Output",
+    "error": "Error",
+    "cost": "Cost",
+    "tokens": "Tokens",
+    "attempts": "Attempts",
+    "createdAt": "Created at",
+    "startedAt": "Started at",
+    "finishedAt": "Finished at",
+    "duration": "Duration",
+    "viewDetails": "View Details",
+    "notFound": "Job not found",
+    "notFoundDescription": "The job with ID {{jobId}} does not exist",
+    "jobId": "Job",
+    "created": "Created",
+    "finished": "Finished",
+    "usageMetrics": "Usage Metrics",
+    "inputTokens": "Input Tokens",
+    "outputTokens": "Output Tokens",
+    "details": {
+      "title": "Job Details",
+      "refreshing": "Refreshing...",
+      "metrics": "Metrics",
+      "inputTokens": "Input Tokens",
+      "outputTokens": "Output Tokens",
+      "totalTokens": "Total Tokens",
+      "estimatedCost": "Estimated Cost",
+      "timestamps": "Timestamps"
+    }
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginSuccess": "Login successful!",
+    "registerSuccess": "Registration successful!",
+    "loginError": "Error logging in",
+    "registerError": "Error registering"
+  },
+  "errors": {
+    "validation_error": "Validation error",
+    "not_found": "Not found",
+    "rate_limited": "Rate limit exceeded. Please try again later.",
+    "internal_error": "Internal server error",
+    "provider_error": "AI provider error",
+    "unauthorized": "Unauthorized. Please login to continue.",
+    "forbidden": "Access denied",
+    "conflict": "Conflict. Resource already exists.",
+    "generic": "An error occurred. Please try again."
+  }
+}
