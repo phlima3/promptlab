@@ -85,8 +85,14 @@ app.use(errorHandler);
 
 const PORT = Number(process.env.PORT || process.env.API_PORT) || 4000;
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ API running on http://0.0.0.0:${PORT}`);
-  console.log(`📚 API Docs: http://0.0.0.0:${PORT}/api-docs`);
-  console.log(`🏥 Health: http://0.0.0.0:${PORT}/health`);
-});
+// Export for Vercel serverless
+export default app;
+
+// Only start server if not in serverless environment
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ API running on http://0.0.0.0:${PORT}`);
+    console.log(`📚 API Docs: http://0.0.0.0:${PORT}/api-docs`);
+    console.log(`🏥 Health: http://0.0.0.0:${PORT}/health`);
+  });
+}

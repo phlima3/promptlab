@@ -1,31 +1,64 @@
 // Local Redis wrapper to avoid ESM/CommonJS issues during build
 // This file provides a CommonJS-compatible interface to the Redis package
+// Redis is OPTIONAL - rate limiting is bypassed when Redis is not available
 
 import type { Request, Response, NextFunction } from "express";
 import Redis from "ioredis";
 
 let redisClient: Redis | null = null;
+let redisAvailable = false;
+let redisInitialized = false;
 
-export function getRedisClient(): Redis {
+export function getRedisClient(): Redis | null {
+  // Only try to connect if REDIS_URL is configured
+  if (!process.env.REDIS_URL) {
+    if (!redisInitialized) {
+      console.log("[Redis] REDIS_URL not configured - rate limiting disabled");
+      redisInitialized = true;
+    }
+    return null;
+  }
+
   if (!redisClient) {
-    const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
-    redisClient = new Redis(redisUrl, {
-      maxRetriesPerRequest: 3,
-      retryStrategy: (times: number) => {
-        if (times > 3) return null;
-        return Math.min(times * 50, 2000);
-      },
-      reconnectOnError: (err: Error) => {
-        const targetErrors = ["READONLY", "ECONNRESET"];
-        return targetErrors.some((e) => err.message.includes(e));
-      },
-    });
+    try {
+      redisClient = new Redis(process.env.REDIS_URL, {
+        maxRetriesPerRequest: 3,
+        lazyConnect: true,
+        retryStrategy: (times: number) => {
+          if (times > 3) {
+            redisAvailable = false;
+            return null;
+          }
+          return Math.min(times * 50, 2000);
+        },
+        reconnectOnError: (err: Error) => {
+          const targetErrors = ["READONLY", "ECONNRESET"];
+          return targetErrors.some((e) => err.message.includes(e));
+        },
+      });
 
-    redisClient.on("error", (err: Error) => {
-      console.error("Redis error:", err);
-    });
+      redisClient.on("error", (err: Error) => {
+        console.error("[Redis] Connection error:", err.message);
+        redisAvailable = false;
+      });
+
+      redisClient.on("connect", () => {
+        console.log("[Redis] Connected successfully");
+        redisAvailable = true;
+      });
+
+      redisInitialized = true;
+    } catch (err) {
+      console.error("[Redis] Failed to initialize:", err);
+      redisClient = null;
+      redisAvailable = false;
+    }
   }
   return redisClient;
+}
+
+export function isRedisAvailable(): boolean {
+  return redisAvailable && redisClient !== null;
 }
 
 export interface RateLimitConfig {
@@ -38,8 +71,19 @@ export async function checkRateLimit(
   identifier: string,
   config: RateLimitConfig
 ) {
+  const client = getRedisClient();
+
+  // If Redis is not available, allow the request (fail open)
+  if (!client) {
+    return {
+      allowed: true,
+      total: config.maxRequests,
+      remaining: config.maxRequests,
+      resetAt: new Date(Date.now() + config.windowSeconds * 1000),
+    };
+  }
+
   try {
-    const client = getRedisClient();
     const key = `${config.keyPrefix}:${identifier}`;
     const now = Math.floor(Date.now() / 1000);
     const windowStart = now - config.windowSeconds;
@@ -68,16 +112,8 @@ export async function checkRateLimit(
       resetAt,
     };
   } catch (error) {
-    console.error("Rate limit check failed:", error);
-    // Fail open in development, fail closed in production
-    if (process.env.NODE_ENV === "production") {
-      return {
-        allowed: false,
-        total: config.maxRequests,
-        remaining: 0,
-        resetAt: new Date(),
-      };
-    }
+    console.error("[Redis] Rate limit check failed:", error);
+    // Fail open - allow request if Redis has issues
     return {
       allowed: true,
       total: config.maxRequests,
@@ -88,12 +124,14 @@ export async function checkRateLimit(
 }
 
 export async function getCached<T>(key: string): Promise<T | null> {
+  const client = getRedisClient();
+  if (!client) return null;
+
   try {
-    const client = getRedisClient();
     const cached = await client.get(key);
     return cached ? JSON.parse(cached) : null;
   } catch (error) {
-    console.error("Cache get failed:", error);
+    console.error("[Redis] Cache get failed:", error);
     return null;
   }
 }
@@ -103,11 +141,13 @@ export async function setCached(
   value: any,
   ttlSeconds: number = 3600
 ): Promise<void> {
+  const client = getRedisClient();
+  if (!client) return;
+
   try {
-    const client = getRedisClient();
     await client.setex(key, ttlSeconds, JSON.stringify(value));
   } catch (error) {
-    console.error("Cache set failed:", error);
+    console.error("[Redis] Cache set failed:", error);
   }
 }
 
