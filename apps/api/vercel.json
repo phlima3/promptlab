@@ -1,14 +1,14 @@
 {
   "version": 2,
-  "installCommand": "cd ../.. && yarn install",
-  "buildCommand": "cd ../.. && yarn workspace @promptlab/db prisma generate && yarn workspace @promptlab/api build",
-  "functions": {
-    "api/index.js": {
-      "memory": 1024,
-      "maxDuration": 30
+  "buildCommand": "yarn workspace @promptlab/db prisma generate && yarn workspace @promptlab/api build",
+  "installCommand": "yarn install",
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
     }
-  },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/api/index.js" }
   ]
 }
