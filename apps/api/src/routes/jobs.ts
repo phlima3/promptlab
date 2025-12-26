@@ -2,9 +2,72 @@ import { Router, Response, NextFunction } from "express";
 import { prisma } from "@promptlab/db/src/client";
 import { GenerateRequestSchema } from "@promptlab/shared";
 import { getCached, setCached } from "../lib/redis";
+import { generate, AIProvider } from "../lib/ai";
 import { AppError } from "../middleware/errorHandler";
 import { AuthRequest, optionalAuth } from "../middleware/auth";
 import crypto from "crypto";
+
+// Process a job by calling the AI provider
+async function processJob(jobId: string): Promise<void> {
+  const job = await prisma.job.findUnique({
+    where: { id: jobId },
+    include: { template: true },
+  });
+
+  if (!job || !job.template) {
+    console.error(`[Job] Job ${jobId} or template not found`);
+    return;
+  }
+
+  try {
+    // Update status to running
+    await prisma.job.update({
+      where: { id: jobId },
+      data: { status: "running" },
+    });
+
+    console.log(`[Job] Processing job ${jobId} with provider ${job.provider}`);
+
+    // Build prompt from template
+    const fullPrompt = job.template.systemPrompt
+      ? `${job.template.systemPrompt}\n\n${job.template.userPrompt}`
+      : job.template.userPrompt;
+
+    // Call AI provider
+    const result = await generate(
+      job.provider as AIProvider,
+      fullPrompt,
+      job.input
+    );
+
+    // Update job with result
+    await prisma.job.update({
+      where: { id: jobId },
+      data: {
+        status: "completed",
+        output: result.output,
+        inputTokens: result.usage.promptTokens,
+        outputTokens: result.usage.completionTokens,
+        totalTokens: result.usage.totalTokens,
+        finishedAt: new Date(),
+      },
+    });
+
+    console.log(`[Job] Completed job ${jobId}`);
+  } catch (error) {
+    console.error(`[Job] Failed job ${jobId}:`, error);
+
+    // Update job with error
+    await prisma.job.update({
+      where: { id: jobId },
+      data: {
+        status: "failed",
+        error: error instanceof Error ? error.message : "Unknown error",
+        finishedAt: new Date(),
+      },
+    });
+  }
+}
 
 const router = Router();
 
@@ -141,6 +204,10 @@ router.post(
           userId: req.user?.userId || null,
         },
       });
+
+      // Process job synchronously (serverless-friendly - no background workers)
+      // Must await in serverless to prevent function termination before completion
+      await processJob(job.id);
 
       res.json({ jobId: job.id });
     } catch (error) {

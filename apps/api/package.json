@@ -12,6 +12,7 @@
     "lint": "echo \"add eslint later\""
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
     "@promptlab/db": "*",
     "@promptlab/redis": "*",
     "@promptlab/shared": "*",
@@ -26,6 +27,7 @@
     "express": "^4.19.2",
     "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.3",
+    "openai": "^6.15.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "typescript": "^5.5.0"
