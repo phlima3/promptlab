@@ -1,4 +1,7 @@
-import { rateLimitMiddleware as rateLimitMiddlewareImpl, type RateLimitConfig } from "../lib/redis";
+import {
+  rateLimitMiddleware as rateLimitMiddlewareImpl,
+  type RateLimitConfig,
+} from "../lib/redis";
 
 /**
  * Rate limiting middleware for Express

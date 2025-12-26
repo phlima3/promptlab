@@ -28,6 +28,7 @@ Guia completo para fazer deploy da API do PromptLab no Railway com banco Neon Po
 ### Copiar Connection String
 
 Você verá algo como:
+
 ```
 postgresql://user:password@ep-cool-cloud-123456.us-east-2.aws.neon.tech/neondb?sslmode=require
 ```
@@ -119,6 +120,7 @@ ALLOWED_ORIGINS=https://seu-frontend.vercel.app
 ```
 
 **💡 Dica para gerar JWT_SECRET:**
+
 ```bash
 openssl rand -base64 32
 ```
@@ -248,6 +250,7 @@ git push origin main
 **Erro: "Cannot find module"**
 
 **Solução**:
+
 ```bash
 # Verifique Root Directory nas Settings
 Root Directory: /apps/api
@@ -259,6 +262,7 @@ Build Command: ./scripts/railway-build.sh
 **Erro: "Permission denied: railway-build.sh"**
 
 **Solução**:
+
 ```bash
 chmod +x scripts/railway-build.sh scripts/railway-start.sh
 git add scripts/*.sh
@@ -273,12 +277,15 @@ git push
 **Erro: "Cannot connect to database"**
 
 **Soluções**:
+
 1. Verifique a DATABASE_URL:
+
    ```bash
    railway variables | grep DATABASE_URL
    ```
 
 2. Certifique-se que tem `?sslmode=require`:
+
    ```
    postgresql://user:pass@host/db?sslmode=require
    ```
@@ -293,6 +300,7 @@ git push
 **Erro: "Migration failed"**
 
 **Solução**:
+
 ```bash
 # Via Railway CLI
 railway link
@@ -305,6 +313,7 @@ railway run cd packages/db && npx prisma migrate deploy
 **Erro: "CORS policy blocked"**
 
 **Solução**:
+
 ```bash
 # Adicione a URL do frontend
 railway variables set ALLOWED_ORIGINS="https://seu-frontend.vercel.app"
@@ -316,6 +325,7 @@ railway variables set ALLOWED_ORIGINS="https://app1.com,https://app2.com"
 **Erro: "JWT must be provided"**
 
 **Solução**:
+
 ```bash
 # Gere e adicione JWT_SECRET
 railway variables set JWT_SECRET="$(openssl rand -base64 32)"
@@ -328,11 +338,13 @@ railway variables set JWT_SECRET="$(openssl rand -base64 32)"
 **API muito lenta**
 
 **Possíveis causas**:
+
 - Neon em região distante
 - Cold start (banco dormindo)
 - Sem Redis
 
 **Soluções**:
+
 ```bash
 # 1. Adicione Redis
 railway add  # Escolha Redis
@@ -356,6 +368,7 @@ railway logs --tail | grep -i "ms"
 **Deploy fica "em progresso" forever**
 
 **Solução**:
+
 1. Cancele o deploy no dashboard
 2. Veja os logs:
    ```bash
@@ -369,6 +382,7 @@ railway logs --tail | grep -i "ms"
 **Funciona local mas falha no Railway**
 
 **Debug**:
+
 ```bash
 # 1. Compare variáveis
 railway variables
@@ -388,6 +402,7 @@ railway run node --version
 **"Redis connection refused"**
 
 **Solução**:
+
 ```bash
 # 1. Verifique se Redis existe
 railway services
@@ -405,6 +420,7 @@ railway variables set REDIS_URL="redis://..."
 **API funciona sem Redis?**
 
 **Sim!** Redis é opcional no MVP. Para desabilitar:
+
 ```bash
 railway variables delete REDIS_URL
 ```
@@ -449,11 +465,13 @@ railway variables set ALLOWED_ORIGINS="https://seu-frontend.vercel.app"
 ## 🎯 Próximos Passos
 
 1. **Deploy do Worker** (mesmo processo):
+
    - Root Directory: `/apps/worker`
    - Mesmas variáveis de ambiente
    - Processa jobs em background
 
 2. **Monitoramento**:
+
    - Sentry para error tracking
    - Logs estruturados
    - Métricas de performance
@@ -468,11 +486,13 @@ railway variables set ALLOWED_ORIGINS="https://seu-frontend.vercel.app"
 ## 💰 Custos
 
 ### Free Tier
+
 - **Railway**: $5 USD/mês de crédito (~500h execução)
 - **Neon**: 0.5 GB storage, 1 projeto
 - **Total**: **$0** para MVP/desenvolvimento! 🎉
 
 ### Paid Plans (quando escalar)
+
 - **Railway**: Pay-as-you-go após créditos ($0.000463/GB-hour)
 - **Neon Pro**: $19/mês (mais storage, sem auto-sleep)
 

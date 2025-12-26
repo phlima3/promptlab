@@ -87,6 +87,7 @@ cp .env.example .env
 Edit `.env` and configure:
 
 **For Local Development (Docker):**
+
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:5433/promptlab"
 ANTHROPIC_API_KEY="your-key-here"
@@ -94,6 +95,7 @@ JWT_SECRET="your-secret-min-32-chars"
 ```
 
 **For Cloud Database (Neon):**
+
 ```env
 DATABASE_URL="postgresql://[user]:[password]@[endpoint].neon.tech/[database]?sslmode=require"
 ANTHROPIC_API_KEY="your-key-here"
@@ -485,6 +487,7 @@ yarn setup:neon
 ```
 
 Or manually:
+
 - Create account at https://neon.com/
 - Create new project
 - Copy connection string
@@ -493,6 +496,7 @@ Or manually:
 **2. Deploy API + Worker**
 
 **Railway** (Recommended for API + Worker):
+
 ```bash
 # Install Railway CLI
 npm i -g @railway/cli
@@ -513,6 +517,7 @@ railway up
 **3. Deploy Web UI**
 
 **Vercel** (Recommended for Next.js):
+
 ```bash
 # Install Vercel CLI
 npm i -g vercel
