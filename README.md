@@ -4,13 +4,14 @@
 
 > **Status**: 100% Complete | **Development Time**: ~8 hours (10 phases) | **Type Safety**: 100%
 
-## 🚂 Deploy to Production
+## 🚀 Deploy to Production
 
-**Ready to deploy?** Complete guide for Railway + Neon:
+**Ready to deploy?** This project is deployed on **Vercel** with **Neon** (PostgreSQL):
 
-📘 **[DEPLOY_RAILWAY.md](DEPLOY_RAILWAY.md)** ⭐ **Guia completo de deploy** - Setup Neon, Deploy Railway, Comandos úteis e Troubleshooting
+- **API**: `promptlab-api.vercel.app`
+- **Web**: `promptlab-web.vercel.app`
 
-**Custo**: $0/mês no free tier! 💰
+**Cost**: $0/month on free tier!
 
 ---
 
@@ -74,7 +75,7 @@ Use [Neon](https://neon.com/) for a serverless PostgreSQL database:
 
 📖 **Detailed guide**: [docs/NEON_SETUP.md](docs/NEON_SETUP.md)
 
-> 💡 **Tip**: Neon is perfect for production deployments (Vercel, Railway, etc) as it offers connection pooling and automatic scaling.
+> 💡 **Tip**: Neon is perfect for serverless deployments (Vercel, etc) as it offers connection pooling and automatic scaling.
 
 ### 3. Configure Environment Variables
 
@@ -475,81 +476,61 @@ See **PROJECT_OVERVIEW.md** for detailed scaling roadmap.
 
 **Before Production**: Add SSL/TLS, security audit (OWASP), monitoring (Sentry)
 
-## � Deploy to Production
+## 🚀 Deploy to Production
 
-### Quick Deploy with Neon + Vercel/Railway
+### Quick Deploy with Neon + Vercel
 
 **1. Setup Neon Database**
-
-```bash
-# Run the interactive setup script
-yarn setup:neon
-```
-
-Or manually:
 
 - Create account at https://neon.com/
 - Create new project
 - Copy connection string
-- Update `DATABASE_URL` in `.env`
 
-**2. Deploy API + Worker**
+**2. Deploy API (Vercel)**
 
-**Railway** (Recommended for API + Worker):
+Create a new project in Vercel Dashboard:
 
-```bash
-# Install Railway CLI
-npm i -g @railway/cli
+| Setting | Value |
+|---------|-------|
+| Root Directory | `apps/api` |
+| Build Command | `cd ../.. && yarn install && yarn workspace @promptlab/shared build && yarn workspace @promptlab/db prisma generate && cd apps/api && yarn build` |
+| Output Directory | `dist` |
 
-# Login and create project
-railway login
-railway init
+Environment Variables:
+- `DATABASE_URL` - Neon connection string
+- `JWT_SECRET` - Secure random string (min 32 chars)
+- `ANTHROPIC_API_KEY` - Your Anthropic API key
+- `ALLOWED_ORIGINS` - Your web app URL
 
-# Add environment variables in dashboard
-railway variables set DATABASE_URL="your-neon-url"
-railway variables set ANTHROPIC_API_KEY="your-key"
-railway variables set JWT_SECRET="your-secret"
+**3. Deploy Web (Vercel)**
 
-# Deploy
-railway up
-```
+Create another project in Vercel Dashboard:
 
-**3. Deploy Web UI**
+| Setting | Value |
+|---------|-------|
+| Root Directory | `apps/web` |
+| Build Command | `cd ../.. && yarn install && yarn workspace @promptlab/shared build && cd apps/web && yarn build` |
 
-**Vercel** (Recommended for Next.js):
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-cd apps/web
-vercel
-
-# Add environment variables in Vercel dashboard
-vercel env add API_URL
-```
+Environment Variables:
+- `NEXT_PUBLIC_API_URL` - Your deployed API URL
 
 ### Environment Variables Checklist
 
 Production environment variables needed:
 
 - `DATABASE_URL` - Neon connection string (with `?sslmode=require`)
-- `REDIS_URL` - Upstash Redis URL (optional but recommended)
+- `REDIS_URL` - Upstash Redis URL (optional - rate limiting disabled without it)
 - `ANTHROPIC_API_KEY` - Your Anthropic API key
 - `JWT_SECRET` - Secure random string (min 32 chars)
-- `NODE_ENV` - Set to `production`
-- `API_URL` - Your deployed API URL (for web app)
+- `NEXT_PUBLIC_API_URL` - Your deployed API URL (for web app)
+- `ALLOWED_ORIGINS` - Comma-separated list of allowed CORS origins
 
 ### Performance Tips for Production
 
 1. **Use Neon Pooled Connection** (port 6543 instead of 5432)
-2. **Enable Redis caching** for duplicate job detection
-3. **Scale workers horizontally** (multiple instances)
-4. **Set up monitoring** (Sentry, Datadog, etc)
-5. **Configure CDN** for static assets (Vercel does this automatically)
-
-📖 **Full deployment guide**: [docs/NEON_SETUP.md](docs/NEON_SETUP.md)
+2. **Enable Redis caching** with Upstash for rate limiting
+3. **Set up monitoring** (Sentry, Datadog, etc)
+4. **Configure CDN** for static assets (Vercel does this automatically)
 
 ## �📝 License
 
