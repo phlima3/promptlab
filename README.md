@@ -4,6 +4,16 @@
 
 > **Status**: 100% Complete | **Development Time**: ~8 hours (10 phases) | **Type Safety**: 100%
 
+## 🚂 Deploy to Production
+
+**Ready to deploy?** Complete guide for Railway + Neon:
+
+📘 **[DEPLOY_RAILWAY.md](DEPLOY_RAILWAY.md)** ⭐ **Guia completo de deploy** - Setup Neon, Deploy Railway, Comandos úteis e Troubleshooting
+
+**Custo**: $0/mês no free tier! 💰
+
+---
+
 ## 🏗️ Architecture
 
 - **apps/web** - Next.js 14 UI (templates, generation, job tracking, i18n)
@@ -42,6 +52,8 @@ yarn install
 
 ### 2. Start Infrastructure Services
 
+**Option A: Local Development (Docker)**
+
 ```bash
 docker compose up -d
 ```
@@ -51,6 +63,19 @@ This starts:
 - PostgreSQL on port 5433
 - Redis on port 6379
 
+**Option B: Cloud Database (Neon)**
+
+Use [Neon](https://neon.com/) for a serverless PostgreSQL database:
+
+1. Create a free account at https://neon.com/
+2. Create a new project
+3. Copy your connection string
+4. Update `DATABASE_URL` in `.env` (see step 3)
+
+📖 **Detailed guide**: [docs/NEON_SETUP.md](docs/NEON_SETUP.md)
+
+> 💡 **Tip**: Neon is perfect for production deployments (Vercel, Railway, etc) as it offers connection pooling and automatic scaling.
+
 ### 3. Configure Environment Variables
 
 Copy `.env.example` to `.env`:
@@ -59,12 +84,23 @@ Copy `.env.example` to `.env`:
 cp .env.example .env
 ```
 
-Add your API keys:
+Edit `.env` and configure:
 
+**For Local Development (Docker):**
 ```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/promptlab"
 ANTHROPIC_API_KEY="your-key-here"
 JWT_SECRET="your-secret-min-32-chars"
 ```
+
+**For Cloud Database (Neon):**
+```env
+DATABASE_URL="postgresql://[user]:[password]@[endpoint].neon.tech/[database]?sslmode=require"
+ANTHROPIC_API_KEY="your-key-here"
+JWT_SECRET="your-secret-min-32-chars"
+```
+
+> 📖 **Using Neon?** See the complete setup guide: [docs/NEON_SETUP.md](docs/NEON_SETUP.md)
 
 ### 4. Run Database Migrations
 
@@ -409,6 +445,16 @@ See **PROJECT_OVERVIEW.md** for detailed scaling roadmap.
 - **apps/web/README_UI.md** - Frontend architecture
 - **.env.example** - Environment variables template
 
+### 🐘 Neon Database Documentation
+
+- **[docs/NEON_QUICKREF.md](docs/NEON_QUICKREF.md)** - Quick reference cheat sheet (start here!)
+- **[docs/NEON_SETUP.md](docs/NEON_SETUP.md)** - Complete setup guide (step-by-step)
+- **[docs/NEON_MIGRATION.md](docs/NEON_MIGRATION.md)** - Migrate from Docker to Neon
+- **[docs/NEON_PRISMA_CONFIG.md](docs/NEON_PRISMA_CONFIG.md)** - Prisma configuration and optimization
+- **[docs/NEON_EXAMPLES.md](docs/NEON_EXAMPLES.md)** - Practical usage examples for different scenarios
+- **[docs/NEON_TROUBLESHOOTING.md](docs/NEON_TROUBLESHOOTING.md)** - Solutions for common problems
+- **[docs/NEON_INTEGRATION_SUMMARY.md](docs/NEON_INTEGRATION_SUMMARY.md)** - Integration summary
+
 ## 🐛 Known Issues
 
 1. **Claude Sonnet models unavailable** - Using Haiku (cheaper, works)
@@ -427,6 +473,79 @@ See **PROJECT_OVERVIEW.md** for detailed scaling roadmap.
 
 **Before Production**: Add SSL/TLS, security audit (OWASP), monitoring (Sentry)
 
-## 📝 License
+## � Deploy to Production
+
+### Quick Deploy with Neon + Vercel/Railway
+
+**1. Setup Neon Database**
+
+```bash
+# Run the interactive setup script
+yarn setup:neon
+```
+
+Or manually:
+- Create account at https://neon.com/
+- Create new project
+- Copy connection string
+- Update `DATABASE_URL` in `.env`
+
+**2. Deploy API + Worker**
+
+**Railway** (Recommended for API + Worker):
+```bash
+# Install Railway CLI
+npm i -g @railway/cli
+
+# Login and create project
+railway login
+railway init
+
+# Add environment variables in dashboard
+railway variables set DATABASE_URL="your-neon-url"
+railway variables set ANTHROPIC_API_KEY="your-key"
+railway variables set JWT_SECRET="your-secret"
+
+# Deploy
+railway up
+```
+
+**3. Deploy Web UI**
+
+**Vercel** (Recommended for Next.js):
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+cd apps/web
+vercel
+
+# Add environment variables in Vercel dashboard
+vercel env add API_URL
+```
+
+### Environment Variables Checklist
+
+Production environment variables needed:
+
+- `DATABASE_URL` - Neon connection string (with `?sslmode=require`)
+- `REDIS_URL` - Upstash Redis URL (optional but recommended)
+- `ANTHROPIC_API_KEY` - Your Anthropic API key
+- `JWT_SECRET` - Secure random string (min 32 chars)
+- `NODE_ENV` - Set to `production`
+- `API_URL` - Your deployed API URL (for web app)
+
+### Performance Tips for Production
+
+1. **Use Neon Pooled Connection** (port 6543 instead of 5432)
+2. **Enable Redis caching** for duplicate job detection
+3. **Scale workers horizontally** (multiple instances)
+4. **Set up monitoring** (Sentry, Datadog, etc)
+5. **Configure CDN** for static assets (Vercel does this automatically)
+
+📖 **Full deployment guide**: [docs/NEON_SETUP.md](docs/NEON_SETUP.md)
+
+## �📝 License
 
 MIT

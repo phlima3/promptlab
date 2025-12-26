@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from "express";
-import { checkRateLimit, RateLimitConfig } from "@promptlab/redis";
+import { rateLimitMiddleware as rateLimitMiddlewareImpl, type RateLimitConfig } from "../lib/redis";
 
 /**
  * Rate limiting middleware for Express
@@ -25,43 +24,7 @@ import { checkRateLimit, RateLimitConfig } from "@promptlab/redis";
  * - Implement distributed rate limiting for multi-region
  */
 export function rateLimitMiddleware(config: RateLimitConfig) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      // Use IP as identifier (can be enhanced with user ID from auth)
-      const identifier = req.ip || req.socket.remoteAddress || "unknown";
-
-      const result = await checkRateLimit(identifier, config);
-
-      // Add rate limit headers
-      res.setHeader("X-RateLimit-Limit", result.total.toString());
-      res.setHeader("X-RateLimit-Remaining", result.remaining.toString());
-      res.setHeader("X-RateLimit-Reset", result.resetAt.toISOString());
-
-      if (!result.allowed) {
-        res.status(429).json({
-          error: {
-            code: "rate_limited",
-            message: "Too many requests. Please try again later.",
-            details: {
-              limit: result.total,
-              resetAt: result.resetAt.toISOString(),
-            },
-          },
-        });
-        return;
-      }
-
-      next();
-    } catch (error) {
-      console.error("[RateLimit] Middleware error:", error);
-      // Fail closed: if Redis is down, block requests to prevent abuse
-      res.status(503).json({
-        error: {
-          code: "service_unavailable",
-          message: "Rate limiting service temporarily unavailable",
-          details: {},
-        },
-      });
-    }
-  };
+  return rateLimitMiddlewareImpl(config);
 }
+
+export type { RateLimitConfig };

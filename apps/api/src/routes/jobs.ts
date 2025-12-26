@@ -1,7 +1,7 @@
 import { Router, Response, NextFunction } from "express";
 import { prisma } from "@promptlab/db/src/client";
 import { GenerateRequestSchema } from "@promptlab/shared";
-import { getCached, setCached } from "@promptlab/redis";
+import { getCached, setCached } from "../lib/redis";
 import { AppError } from "../middleware/errorHandler";
 import { AuthRequest, optionalAuth } from "../middleware/auth";
 import crypto from "crypto";
@@ -97,9 +97,7 @@ router.post(
         .digest("hex");
 
       // Check Redis cache first (fast path)
-      const cachedJobId = await getCached<string>(`job:hash:${inputHash}`, {
-        keyPrefix: "gen",
-      });
+      const cachedJobId = await getCached<string>(`gen:job:hash:${inputHash}`);
 
       if (cachedJobId) {
         console.log(`[API] Cache hit for inputHash: ${inputHash}`);
@@ -116,10 +114,7 @@ router.post(
 
       if (existingJob) {
         // Store in cache for next time (1 hour TTL)
-        await setCached(`job:hash:${inputHash}`, existingJob.id, {
-          keyPrefix: "gen",
-          ttl: 3600, // 1 hour
-        });
+        await setCached(`gen:job:hash:${inputHash}`, existingJob.id, 3600);
         return res.json({ jobId: existingJob.id });
       }
 

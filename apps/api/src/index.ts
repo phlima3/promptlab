@@ -10,14 +10,21 @@ import jobsRouter from "./routes/jobs";
 
 const app = express();
 
-// CORS - Allow requests from localhost:3000 (Next.js dev server)
+// CORS - Allow requests from localhost and production
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://localhost:3001",
+];
+
+// Add production origins from env
+if (process.env.ALLOWED_ORIGINS) {
+  allowedOrigins.push(...process.env.ALLOWED_ORIGINS.split(","));
+}
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://127.0.0.1:3000",
-      "http://localhost:3001",
-    ],
+    origin: allowedOrigins,
     credentials: true,
   })
 );
@@ -76,8 +83,10 @@ app.use("/jobs", jobsRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-const PORT = Number(process.env.API_PORT) || 4000;
+const PORT = Number(process.env.PORT || process.env.API_PORT) || 4000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`API running on http://0.0.0.0:${PORT}`);
+  console.log(`✅ API running on http://0.0.0.0:${PORT}`);
+  console.log(`📚 API Docs: http://0.0.0.0:${PORT}/api-docs`);
+  console.log(`🏥 Health: http://0.0.0.0:${PORT}/health`);
 });

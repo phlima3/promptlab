@@ -2,9 +2,11 @@
   "name": "@promptlab/api",
   "version": "0.1.0",
   "private": true,
+  "type": "commonjs",
   "scripts": {
     "dev": "dotenv -e ../../.env -- tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"add eslint later\""
   },
@@ -16,6 +18,7 @@
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
@@ -26,6 +29,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "dotenv-cli": "^11.0.0",
     "tsx": "^4.16.2",
     "typescript": "^5.5.0"
   }
