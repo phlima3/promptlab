@@ -63,13 +63,18 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Swagger documentation
-app.use("/api-docs", swaggerUi.serve as any);
-app.get(
+// Swagger documentation - use CDN for serverless compatibility
+app.use(
   "/api-docs",
+  swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
     customCss: ".swagger-ui .topbar { display: none }",
     customSiteTitle: "PromptLab API Docs",
+    customCssUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css",
+    customJs: [
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.js",
+    ],
   }) as any
 );
 
