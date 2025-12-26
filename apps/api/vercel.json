@@ -1,7 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "yarn workspace @promptlab/shared build && yarn workspace @promptlab/db prisma generate && yarn workspace @promptlab/api build",
-  "installCommand": "yarn install",
   "builds": [
     {
       "src": "api/index.js",
