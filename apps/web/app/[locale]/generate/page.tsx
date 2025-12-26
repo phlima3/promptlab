@@ -15,10 +15,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Loader2, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { ProtectedRoute } from "@/components/protected-route";
 
 export default function GeneratePage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-zinc-500" /></div>}>
+      <GenerateContent />
+    </Suspense>
+  );
+}
+
+function GenerateContent() {
   const t = useTranslations();
   const pathname = usePathname();
   const searchParams = useSearchParams();
